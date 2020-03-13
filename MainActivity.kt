@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-      private  val API_KEY= "53a89cbb"
+        val API_KEY= BuildConfig.GoogleSecAPIKEY
 //--------------------------Disposables Variable //Todo: Learn what CompositeDisposable class does
     val disposables = CompositeDisposable()
 
@@ -67,14 +67,18 @@ class MainActivity : AppCompatActivity() {
     val movieImage = findViewById<ImageView>(R.id.movieImage)
     val actorsTextStyle = "Actors"
     var movieUrl: String;
-    val ifEmptyTextView = findViewById<TextView>(R.id.ifEmptyTextView)
-    val badMovieImage = findViewById<ImageView>(R.id.badMovieSearch)
+//    val ifEmptyTextView = findViewById<TextView>(R.id.ifEmptyTextView)
+//    val badMovieImage = findViewById<ImageView>(R.id.badMovieSearch)
     val badmovieUrl = "https://m.media-amazon.com/images/M/MV5BMTE5MTYxMDg5NV5BMl5BanBnXkFtZTYwNjc5MzQ3._V1_SX300.jpg"
     var movieRating = findViewById<TextView>(R.id.movieIMBDrating)
     val movieRatingStarVector = findViewById<ImageView>(R.id.movieRatingStar)
     val goodScrollView = findViewById<ScrollView>(R.id.goodMovieSearch)
     val badScrollView =findViewById<ScrollView>(R.id.MovieNotFound)
+
 //------------------------------------------------------------------------------------BUTTON onClickListener
+    if(editText.text.toString().isEmpty()){
+
+    }
     button.setOnClickListener {
         var movieNameSearch = editText.text.toString()
 
@@ -84,8 +88,7 @@ class MainActivity : AppCompatActivity() {
             Picasso.get().load(badmovieUrl).into(badMovieSearch)
         } else {
             badScrollView.visibility =View.GONE
-            movieRatingStarVector.visibility =View.VISIBLE
-            goodScrollView.visibility =View.VISIBLE
+
             service.getCurrentMovieData(API_KEY, movieNameSearch)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -106,6 +109,7 @@ class MainActivity : AppCompatActivity() {
                             movieRating.text = "IMDB \n${it.imdbRating}/10"
                             Picasso.get().load(movieUrl).into(movieImage)
                             goodScrollView.visibility = View.VISIBLE
+            movieRatingStarVector.visibility =View.VISIBLE
                         }
                     },
                     {
