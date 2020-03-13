@@ -72,22 +72,20 @@ class MainActivity : AppCompatActivity() {
     val badmovieUrl = "https://m.media-amazon.com/images/M/MV5BMTE5MTYxMDg5NV5BMl5BanBnXkFtZTYwNjc5MzQ3._V1_SX300.jpg"
     var movieRating = findViewById<TextView>(R.id.movieIMBDrating)
     val movieRatingStarVector = findViewById<ImageView>(R.id.movieRatingStar)
+    val goodScrollView = findViewById<ScrollView>(R.id.goodMovieSearch)
+    val badScrollView =findViewById<ScrollView>(R.id.MovieNotFound)
 //------------------------------------------------------------------------------------BUTTON onClickListener
     button.setOnClickListener {
         var movieNameSearch = editText.text.toString()
 
-
         if (movieNameSearch.isEmpty()) {
-            ifEmptyTextView.visibility = View.VISIBLE
-            badMovieImage.visibility = View.VISIBLE
+            badScrollView.visibility =View.VISIBLE
+            goodScrollView.visibility = View.GONE
             Picasso.get().load(badmovieUrl).into(badMovieSearch)
-        }
-
-        else {
-
-            movieRatingStarVector.visibility = View.VISIBLE
-            badMovieImage.visibility = View.GONE
-            ifEmptyTextView.visibility =View.GONE
+        } else {
+            badScrollView.visibility =View.GONE
+            movieRatingStarVector.visibility =View.VISIBLE
+            goodScrollView.visibility =View.VISIBLE
             service.getCurrentMovieData(API_KEY, movieNameSearch)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -95,20 +93,9 @@ class MainActivity : AppCompatActivity() {
                     {
 
                         if(it.title == null ){
-                            movieRatingStarVector.visibility = View.GONE
-                            movieTitle.visibility = View.GONE
-                            movieDirector.visibility = View.GONE
-                            moviePlot.visibility = View.GONE
-                            movieYear.visibility =View.GONE
-                            movieActors.visibility = View.GONE
-                            movieRating.visibility = View.GONE
-                            movieImage.visibility =View.GONE
-                            ifEmptyTextView.visibility = View.VISIBLE
-                            badMovieImage.visibility = View.VISIBLE
+                            badScrollView.visibility =View.VISIBLE
+                            goodScrollView.visibility = View.GONE
                             Picasso.get().load(badmovieUrl).into(badMovieSearch)
-
-
-
                         } else {
                             movieTitle.text = it.title
                             moviePlot.text = it.plot
@@ -117,26 +104,14 @@ class MainActivity : AppCompatActivity() {
                             movieDirector.text = "Director: ${it.director}"
                             movieUrl = it.poster
                             movieRating.text = "IMDB \n${it.imdbRating}/10"
-
                             Picasso.get().load(movieUrl).into(movieImage)
-                            movieRatingStarVector.visibility = View.VISIBLE
-                            movieTitle.visibility = View.VISIBLE
-                            movieDirector.visibility = View.VISIBLE
-                            moviePlot.visibility = View.VISIBLE
-                            movieYear.visibility =View.VISIBLE
-                            movieActors.visibility = View.VISIBLE
-                            movieRating.visibility = View.VISIBLE
-                            movieImage.visibility =View.VISIBLE
+                            goodScrollView.visibility = View.VISIBLE
                         }
-
                     },
                     {
-
                         Log.e("tag", it.toString())
                     }
-
                 ).addTo(disposables)
-
         }
 
     }
